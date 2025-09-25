@@ -1,6 +1,6 @@
 // app/routes/home.jsx
 import { Form, redirect } from "react-router";
-import { stkPush, normalizePhone } from "../.server/stkpush.js";
+import { normalizePhone, stkPush } from "../.server/stkpush.js";
 
 export async function action({ request }) {
   const formData = await request.formData();

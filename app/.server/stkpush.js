@@ -56,7 +56,7 @@ function generateTimestamp() {
   let ss = String(date.getSeconds()).padStart(2, "0");
   return `${YYYY}${MM}${DD}${HH}${mm}${ss}`;
 }
-function normalizePhone(phone) {
+export function normalizePhone(phone) {
   if (!phone) return "";
   phone = phone.toString().trim();
   if (phone.startsWith("0")) {
