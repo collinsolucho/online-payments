@@ -81,8 +81,8 @@ export function normalizePhone(phone) {
 
 // Function to get OAuth token from Safaricom
 export async function getMpesaToken() {
-  let consumerKey = process.env.consumer_key;
-  let consumerSecret = process.env.consumer_secret;
+  let consumerKey = process.env.Consumer_key;
+  let consumerSecret = process.env.Consumer_secret;
 
   let auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString("base64");
 
