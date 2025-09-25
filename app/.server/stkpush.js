@@ -80,27 +80,18 @@ export function normalizePhone(phone) {
 }
 
 // Function to get OAuth token from Safaricom
-export async function getMpesaToken() {
-  let consumerKey = process.env.Consumer_key;
-  let consumerSecret = process.env.Consumer_secret;
-
-  let auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString("base64");
+async function getMpesaToken() {
+  let key = process.env.Consumer_Key;
+  let secret = process.env.Consumer_Secret;
+  let auth = Buffer.from(`${key}:${secret}`).toString("base64");
 
   let res = await fetch(
     "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials",
     {
-      method: "GET",
-      headers: {
-        Authorization: `Basic ${auth}`,
-      },
+      headers: { Authorization: `Basic ${auth}` },
     }
   );
 
-  if (!res.ok) {
-    let errorText = await res.text();
-    throw new Error(`Failed to fetch Mpesa token: ${errorText}`);
-  }
-
   let data = await res.json();
-  return data.access_token; // Safaricom responds with { access_token, expires_in }
+  return data.access_token;
 }
