@@ -27,7 +27,7 @@ export async function stkPush({ phone, amount }) {
     PartyA: phone,
     PartyB: shortcode,
     PhoneNumber: phone,
-    CallBackURL: "https://online-payments-plum.vercel.app/api/mpesa", // update with your real callback URL
+    CallBackURL: "https://online-payments-pctp.vercel.app/mpesa", // update with your real callback URL
     AccountReference: `Order${timestamp}`,
     TransactionDesc: "Payment Test",
   };
