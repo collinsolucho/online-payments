@@ -6,8 +6,9 @@ export async function loader({ request }) {
   let phone = url.searchParams.get("phone");
 
   if (!phone) {
-    return (
-      data({ error: "Phone required" }),
+    return;
+    data(
+      { error: "Phone required" },
       {
         status: 400,
         headers: { "Content-Type": "application/json" },

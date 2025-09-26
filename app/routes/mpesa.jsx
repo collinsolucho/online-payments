@@ -47,7 +47,7 @@ export async function action({ request }) {
     resultCode: ResultCode,
     resultDesc: ResultDesc,
   };
-  await updateLatestPayment(phone, updateData);
+  let result = await updateLatestPayment(phone, updateData);
   console.log(" Mongo Update Result:", result);
   console.log(` Payment updated for ${phone}`);
   return data({ status: "ok" });
