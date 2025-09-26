@@ -1,4 +1,3 @@
-// app/routes/api/mpesa.jsx
 import { data } from "react-router";
 import { updateLatestPayment } from "../model/database";
 
