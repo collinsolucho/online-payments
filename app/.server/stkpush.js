@@ -42,7 +42,7 @@ export async function stkPush({ phone, amount }) {
     throw new Error(`STK Push request failed: ${errorText}`);
   }
 
-  let response = res.json();
+  let response = await res.json();
   console.log("response", response);
   // ✅ Only save after Safaricom gives CheckoutRequestID
   if (response.CheckoutRequestID) {
