@@ -1,28 +1,28 @@
 // app/.server/database.js
 import { client } from "../.server/mongo";
 
-const db = client.db("mpesa");
-const payments = db.collection("payments");
+let db = client.db("mpesa");
+let payments = db.collection("payments");
 
 export async function addPayments(payment) {
   return payments.insertOne(payment);
 }
 
-export async function getLatestPaymentByPhone(phone) {
-  return payments.find({ phone }).sort({ createdAt: -1 }).limit(1).next();
-}
-export async function getPaymentByCheckoutId(CheckoutRequestID) {
+// export async function getLatestPaymentByPhone(phone) {
+//   return payments.find({ phone }).sort({ createdAt: -1 }).limit(1).next();
+// }
+export async function getPaymentByCheckoutId(checkoutId) {
   return payments
-    .find({ CheckoutRequestID })
+    .find({ checkoutId: String(checkoutId) })
     .sort({ createdAt: -1 })
     .limit(1)
     .next();
 }
-export async function updateLatestPayment(CheckoutID, updateData) {
+export async function updateLatestPayment(checkoutId, updateData) {
   return payments.findOneAndUpdate(
     { checkoutId: String(checkoutId) },
     { $set: { ...updateData, updatedAt: new Date() } },
-    { sort: { createdAt: -1 }, returnDocument: "after", upsert: false }
+    { sort: { createdAt: -1 }, returnDocument: "after", upsert: true }
   );
 }
 

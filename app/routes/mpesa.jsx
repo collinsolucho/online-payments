@@ -13,10 +13,7 @@ export async function action({ request }) {
   let { ResultCode, ResultDesc, CallbackMetadata, CheckoutRequestID } = stk;
   let checkoutId = CheckoutRequestID || stk.CheckoutRequestID;
 
-  // // let checkoutId = checkoutId,
-  // let receipt = null;
-  // let txDate = null;
-
+  let phone, amount, receipt, txDate;
   if (CallbackMetadata?.Item) {
     // Extract metadata
     CallbackMetadata.Item.forEach((item) => {
@@ -49,7 +46,7 @@ export async function action({ request }) {
 
   if (!checkoutId) {
     console.error("No CheckoutRequestID present in callback. Aborting update.");
-    return json({ status: "missing_checkout_id" }, { status: 400 });
+    return data({ status: "missing_checkout_id" }, { status: 400 });
   }
   // Update pending payment
   let updateData = {
