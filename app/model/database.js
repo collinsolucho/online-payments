@@ -18,11 +18,11 @@ export async function getPaymentByCheckoutId(CheckoutRequestID) {
     .limit(1)
     .next();
 }
-export async function updateLatestPayment(CheckoutRequestID, updateData) {
+export async function updateLatestPayment(CheckoutID, updateData) {
   return payments.findOneAndUpdate(
-    { phone: String(phone) },
+    { checkoutId: String(checkoutId) },
     { $set: { ...updateData, updatedAt: new Date() } },
-    { sort: { createdAt: -1 }, returnDocument: "after", upsert: true }
+    { sort: { createdAt: -1 }, returnDocument: "after", upsert: false }
   );
 }
 

@@ -11,12 +11,11 @@ export async function action({ request }) {
   if (!stk) return data({ status: "ignored" });
 
   let { ResultCode, ResultDesc, CallbackMetadata, CheckoutRequestID } = stk;
+  let checkoutId = CheckoutRequestID || stk.CheckoutRequestID;
 
-  // Defaults
-  // let phone = null;
-  // let amount = null;
-  let receipt = null;
-  let txDate = null;
+  // // let checkoutId = checkoutId,
+  // let receipt = null;
+  // let txDate = null;
 
   if (CallbackMetadata?.Item) {
     // Extract metadata
@@ -48,9 +47,13 @@ export async function action({ request }) {
     resultDesc: ResultDesc,
   });
 
+  if (!checkoutId) {
+    console.error("No CheckoutRequestID present in callback. Aborting update.");
+    return json({ status: "missing_checkout_id" }, { status: 400 });
+  }
   // Update pending payment
   let updateData = {
-    checkoutId: CheckoutRequestID,
+    checkoutId,
     phone,
     amount,
     receipt,
