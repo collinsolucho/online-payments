@@ -61,7 +61,7 @@ export async function action({ request }) {
     resultCode: ResultCode,
     resultDesc: ResultDesc,
   };
-  let result = await updateLatestPayment(CheckoutRequestID, updateData);
+  let result = await updateLatestPayment(checkoutId, updateData);
   console.log(" Mongo Update Result:", result);
   console.log(` Payment updated for ${phone}`);
   console.log(` Payment updated for ${CheckoutRequestID}`);
