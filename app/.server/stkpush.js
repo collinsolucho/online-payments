@@ -1,12 +1,12 @@
 import { addPayments } from "../model/database";
-import { getSession } from "./session";
+import { getSession } from "../.server/session.js";
 
 // Function to request STK Push
 export async function stkPush({ phone, amount, request }) {
   let session = await getSession(request.headers.get("Cookie"));
   if (!phone) phone = session.get("phone");
   if (!amount) amount = session.get("amount");
-  let checkoutId = session.get("checkoutId");
+  // let checkoutId = session.get("checkoutId");
   let shortcode = process.env.Mpesa_Paybill;
   let passkey = process.env.pass_key;
   let timestamp = generateTimestamp();
