@@ -1,18 +1,26 @@
 // app/routes/home.jsx
 import { Form, redirect } from "react-router";
 import { normalizePhone, stkPush } from "../.server/stkpush.js";
-import { getSession } from "../.server/session.js";
+import { commitSession, getSession } from "../.server/session.js";
 
 export async function action({ request }) {
   let session = await getSession(request.headers.get("Cookie"));
   let formData = await request.formData();
   let phone = normalizePhone(formData.get("phone"));
   let amount = formData.get("amount");
-  session.set("phone", phone);
-  let safResponse = await stkPush({ phone, amount });
-  if (safResponse.errorCode) return redirect("/home");
 
-  return redirect(`/success?phone=${phone}`);
+  let safResponse = await stkPush({ phone, amount });
+
+  if (safResponse.errorCode) return redirect("/home");
+  session.set("phone", phone);
+  session.set("amount", amount);
+  session.set("checkoutId", safResponse.CheckoutRequestID);
+
+  return redirect(`/success`, {
+    headers: {
+      "Set-Cookie": await commitSession(session),
+    },
+  });
 }
 
 export default function Payments() {

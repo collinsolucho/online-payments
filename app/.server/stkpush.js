@@ -1,22 +1,18 @@
 import { addPayments } from "../model/database";
+import { getSession } from "./session";
 
 // Function to request STK Push
-export async function stkPush({ phone, amount }) {
+export async function stkPush({ phone, amount, request }) {
+  let session = await getSession(request.headers.get("Cookie"));
+  if (!phone) phone = session.get("phone");
+  if (!amount) amount = session.get("amount");
+  let checkoutId = session.get("checkoutId");
   let shortcode = process.env.Mpesa_Paybill;
   let passkey = process.env.pass_key;
   let timestamp = generateTimestamp();
   let password = Buffer.from(shortcode + passkey + timestamp).toString(
     "base64"
   );
-
-  // Save as pending before Safaricom callback
-  await addPayments({
-    phone: phone.toString(),
-    amount: amount.toString(),
-    resultCode: null,
-    resultDesc: "Pending",
-    createdAt: new Date(),
-  });
 
   let payload = {
     BusinessShortCode: shortcode,
@@ -51,7 +47,24 @@ export async function stkPush({ phone, amount }) {
     throw new Error(`STK Push request failed: ${errorText}`);
   }
 
-  return res.json();
+  let response = res.json();
+  console.log("response", response);
+  // ✅ Only save after Safaricom gives CheckoutRequestID
+  if (response.CheckoutRequestID) {
+    await addPayments({
+      phone: phone.toString(),
+      amount: amount.toString(),
+      resultCode: null,
+      resultDesc: "Pending",
+      checkoutId: response.CheckoutRequestID,
+      createdAt: new Date(),
+    });
+
+    // Save to session
+    session.set("checkoutId", response.CheckoutRequestID);
+  }
+
+  return response;
 }
 
 // Generate timestamp in Safaricom’s format YYYYMMDDHHMMSS
