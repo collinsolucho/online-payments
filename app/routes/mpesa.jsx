@@ -24,10 +24,10 @@ export async function action({ request }) {
       if (item.Name === "PhoneNumber") phone = item.Value?.toString();
       if (item.Name === "Amount") amount = item.Value?.toString();
       if (item.Name === "MpesaReceiptNumber") receipt = item.Value;
-      if (item.Name === "TransactionDate") txDate = item.Value;
+      if (item.Name === "TransactionDate") txDate = formatTxDate(item.Value);
     });
   }
-  function txDate(raw) {
+  function formatTxDate(raw) {
     if (!raw) return null;
     let str = raw.toString();
     let year = str.slice(0, 4);

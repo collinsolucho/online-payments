@@ -1,5 +1,5 @@
 // routes/success.jsx
-import { useLoaderData, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 
 export async function loader({ request }) {
