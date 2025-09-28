@@ -1,23 +1,16 @@
+// routes/payment-status.jsx
 import { data } from "react-router";
-import { getLatestPaymentByPhone } from "../model/database";
+import { getPaymentByCheckoutId } from "../model/database.js";
+import { getSession } from "../.server/session.js";
 
 export async function loader({ request }) {
-  let url = new URL(request.url);
-  let phone = url.searchParams.get("phone");
+  let session = await getSession(request.headers.get("Cookie"));
+  let checkoutId = session.get("checkoutId");
 
-  if (!phone) {
-    return;
-    data(
-      { error: "Phone required" },
-      {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+  if (!checkoutId) {
+    return data({ error: "Missing checkoutId" }, { status: 400 });
   }
 
-  let payment = await getLatestPaymentByPhone(phone);
-  return data(payment || { status: "pending" }, {
-    headers: { "Content-Type": "application/json" },
-  });
+  let payment = await getPaymentByCheckoutId(checkoutId);
+  return data(payment || { status: "pending" });
 }

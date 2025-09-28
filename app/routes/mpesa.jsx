@@ -10,11 +10,11 @@ export async function action({ request }) {
   let stk = body?.Body?.stkCallback;
   if (!stk) return data({ status: "ignored" });
 
-  let { ResultCode, ResultDesc, CallbackMetadata } = stk;
+  let { ResultCode, ResultDesc, CallbackMetadata, CheckoutRequestID } = stk;
 
   // Defaults
-  let phone = null;
-  let amount = null;
+  // let phone = null;
+  // let amount = null;
   let receipt = null;
   let txDate = null;
 
@@ -27,7 +27,17 @@ export async function action({ request }) {
       if (item.Name === "TransactionDate") txDate = item.Value;
     });
   }
-
+  function txDate(raw) {
+    if (!raw) return null;
+    let str = raw.toString();
+    let year = str.slice(0, 4);
+    let month = str.slice(4, 6);
+    let day = str.slice(6, 8);
+    let hour = str.slice(8, 10);
+    let minute = str.slice(10, 12);
+    let second = str.slice(12, 14);
+    return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+  }
   // ToDo: the logs and updates arent running
   console.log("Updating payment with:", {
     phone,
@@ -40,14 +50,17 @@ export async function action({ request }) {
 
   // Update pending payment
   let updateData = {
+    checkoutId: CheckoutRequestID,
+    phone,
     amount,
     receipt,
     txDate,
     resultCode: ResultCode,
     resultDesc: ResultDesc,
   };
-  let result = await updateLatestPayment(phone, updateData);
+  let result = await updateLatestPayment(CheckoutRequestID, updateData);
   console.log(" Mongo Update Result:", result);
   console.log(` Payment updated for ${phone}`);
+  console.log(` Payment updated for ${CheckoutRequestID}`);
   return data({ status: "ok" });
 }
